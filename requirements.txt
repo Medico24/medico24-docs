@@ -1,0 +1,19 @@
+# MkDocs and core plugins
+mkdocs>=1.5.0
+mkdocs-material>=9.4.0
+mkdocs-git-revision-date-localized-plugin>=1.2.0
+mkdocs-minify-plugin>=0.7.0
+
+# Code documentation
+mkdocstrings[python]>=0.24.0
+
+# Markdown extensions
+pymdown-extensions>=10.3.0
+
+# Development dependencies
+watchdog>=3.0.0
+
+# Optional: For advanced features
+# mkdocs-awesome-pages-plugin>=2.9.0
+# mkdocs-redirects>=1.2.0
+# mkdocs-macros-plugin>=1.0.0
