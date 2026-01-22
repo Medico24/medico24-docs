@@ -1,0 +1,162 @@
+site_name: Medico24 Platform Documentation
+repo_url: https://github.com/medico24/medico24
+site_description: Comprehensive documentation for the Medico24 healthcare appointment management platform
+site_author: Medico24 Development Team
+copyright: Copyright &copy; 2026 Medico24 Team
+
+# Repository
+repo_name: medico24/medico24
+edit_uri: edit/main/medico24-docs/docs/
+
+nav:
+  - Home: index.md
+  - API Documentation:
+    - Overview: api/overview.md
+    - Specifications: api/specifications.md
+  - Architecture:
+    - System Overview: architecture/overview.md
+  - Implementations:
+    - Dashboard Implementation: implementations/dashboard.md
+    - Environmental API: implementations/environment-api.md
+  - Monitoring:
+    - Overview: monitoring/overview.md
+    - Setup Guide: monitoring/setup.md
+  - Development Guides:
+    - Development Setup: guides/development.md
+    - Mobile App Guide: guides/mobile-app.md
+    - ML Module Guide: guides/ml-module.md
+    - Authentication: guides/authentication.md
+    - Testing: guides/testing.md
+    - Deployment: guides/deployment.md
+    - Error Handling: guides/error-handling.md
+    - Rate Limiting: guides/rate-limiting.md
+    - Caching: guides/caching.md
+    - Data Privacy: guides/data-privacy.md
+    - Contact: guides/contact.md
+    - Contributing: guides/contributing.md
+    - License: guides/license.md
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - toc.follow
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.tabs.link
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - content.action.view
+  
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+  
+  logo: assets/logo.png
+  favicon: assets/favicon.ico
+
+plugins:
+  - search:
+      lang: en
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+  - git-revision-date-localized:
+      type: timeago
+      fallback_to_build_date: true
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      htmlmin_opts:
+        remove_comments: true
+
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+      title: Page contents
+  
+  # Python Markdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra:
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/medico24
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/medico24
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/company/medico24
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
