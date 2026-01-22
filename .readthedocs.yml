@@ -1,0 +1,13 @@
+# Read the Docs configuration for Medico24
+version: 2
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.11"
+python:
+  install:
+    - method: pip
+      path: ./medico24-docs
+    - requirements: medico24-docs/requirements.txt
+mkdocs:
+  configuration: medico24-docs/mkdocs.yml
