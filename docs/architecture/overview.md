@@ -688,10 +688,10 @@ ELASTICSEARCH_PORT=9200
 LOG_RETENTION_DAYS=30
 
 # Cloud Database Monitoring
-POSTGRES_DATA_SOURCE_NAME=postgresql://neondb_owner:npg_jeovBx53HtcV@ep-muddy-credit-a1n85vjt-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+POSTGRES_DATA_SOURCE_NAME=postgresql://username:password@your-neon-host.aws.neon.tech/dbname?sslmode=require
 
 # Cloud Redis Monitoring
-REDIS_ADDR=redis://default:sGzaBjCpaIGych5m6jLt2gWgGFrTIYQa@redis-11701.c264.ap-south-1-1.ec2.cloud.redislabs.com:11701
+REDIS_ADDR=redis://username:password@your-redis-host.cloud.redislabs.com:port
 ```
 
 ### Networking
@@ -1577,7 +1577,7 @@ Pre-commit Hooks (.pre-commit-config.yaml)
 
 **Connection:**
 ```
-postgresql://neondb_owner:<password>@ep-muddy-credit-a1n85vjt-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+postgresql://username:password@your-neon-host.aws.neon.tech/dbname?sslmode=require
 ```
 
 **Monitoring:**
@@ -1599,7 +1599,7 @@ postgresql://neondb_owner:<password>@ep-muddy-credit-a1n85vjt-pooler.ap-southeas
 
 **Connection:**
 ```
-redis://default:<password>@redis-11701.c264.ap-south-1-1.ec2.cloud.redislabs.com:11701
+redis://username:password@your-redis-host.cloud.redislabs.com:port
 ```
 
 **Monitoring:**
