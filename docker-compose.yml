@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medico24-docs
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./docs:/docs/docs
+      - ./mkdocs.yml:/docs/mkdocs.yml
+    restart: no
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: mkdocs serve --dev-addr=0.0.0.0:8000

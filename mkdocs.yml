@@ -11,9 +11,9 @@ edit_uri: edit/main/medico24-docs/docs/
 nav:
   - Home: index.md
   - Getting Started:
-    - Project Ideas & Roadmap: roadmap/project-ideas.md
     - Setup Overview: guides/setup/overview.md
     - Contributing: guides/contributing.md
+    - Project Ideas & Roadmap: roadmap/project-ideas.md
   - Setup Guides:
     - Overview: guides/setup/overview.md
     - External Services: guides/setup/external-services.md

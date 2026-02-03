@@ -28,10 +28,51 @@ docs/
 
 ### Prerequisites
 
-- Python 3.8+
+Choose one of the following options:
+
+**Option 1: Docker**
+- Docker
+- Docker Compose
+
+**Option 2: Local Python**
+- Python 3.11+
 - pip
 
 ### Setup
+
+#### Using Docker (Recommended)
+
+```bash
+# Clone repository
+git clone https://github.com/medico24/medico24-docs.git
+cd medico24-docs
+
+# Build and start the documentation server
+docker-compose up -d
+
+# Open in browser
+# Navigate to http://localhost:8000
+```
+
+The documentation server will automatically reload when you make changes to files in the `docs/` directory.
+
+**Docker Commands:**
+
+```bash
+# Start the container
+docker-compose up -d
+
+# Stop the container
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Rebuild after requirements change
+docker-compose up -d --build
+```
+
+#### Using Local Python
 
 ```bash
 # Clone repository
@@ -44,6 +85,18 @@ pip install -r requirements.txt
 
 ### Development
 
+#### With Docker
+
+```bash
+# Container runs automatically with live reload
+docker-compose up -d
+
+# View logs
+docker-compose logs -f docs
+```
+
+#### With Local Python
+
 ```bash
 # Start development server
 mkdocs serve
@@ -53,6 +106,19 @@ open http://localhost:8000
 ```
 
 ### Build
+
+#### With Docker
+
+```bash
+# Build static site inside container
+docker-compose exec docs mkdocs build
+
+# Or build using Docker without compose
+docker build -t medico24-docs .
+docker run --rm -v ${PWD}/site:/docs/site medico24-docs mkdocs build
+```
+
+#### With Local Python
 
 ```bash
 # Build static site
