@@ -2,6 +2,9 @@
 
 Welcome to the comprehensive documentation for the Medico24 healthcare appointment management platform.
 
+!!! info "🚀 New: Project Roadmap Available!"
+    Check out our [**Project Ideas & Roadmap**](roadmap/project-ideas.md) to learn about planned features or contribute to the project!
+
 ## Overview
 
 **Medico24** is an enterprise-grade healthcare appointment management system built with modern microservices architecture. The platform enables patients to book appointments, search for nearby pharmacies, receive real-time environmental health data, and manage their healthcare needs through intuitive mobile and web interfaces.
@@ -32,10 +35,30 @@ Welcome to the comprehensive documentation for the Medico24 healthcare appointme
 
 ### For Developers
 
-1. **Backend Development**: See [API Documentation](api/specifications.md)
-2. **Frontend Development**: See [Dashboard Implementation](implementations/dashboard.md)
-3. **Mobile Development**: See [Mobile App Guide](guides/mobile-app.md)
-4. **Monitoring Setup**: See [Observability Guide](monitoring/setup.md)
+1. **Getting Started**: See [Development Setup Guide](guides/development.md) - Complete setup with external services (Firebase, Google Maps, etc.)
+2. **Backend Development**: See [API Documentation](api/specifications.md)
+3. **Frontend Development**: See [Dashboard Implementation](implementations/dashboard.md)
+4. **Mobile Development**: See [Mobile App Guide](guides/mobile-app.md)
+5. **ML Development**: See [ML Module Guide](guides/ml-module.md)
+6. **Monitoring Setup**: See [Observability Guide](monitoring/setup.md)
+
+### For Contributors
+
+!!! success "Want to Contribute?"
+    We welcome contributions! Here's how to get started:
+
+    1. 🎯 **Find a Project**: Browse [Project Ideas & Roadmap](roadmap/project-ideas.md)
+    2. 📖 **Read Guidelines**: Check [Contributing Guide](guides/contributing.md)
+    3. 💻 **Setup Dev Environment**: Follow [Development Setup](guides/development.md)
+    4. 🧪 **Write Tests**: See [Testing Guide](guides/testing.md)
+    5. 📝 **Submit PR**: Follow our contribution process
+
+**Popular Contribution Areas**:
+
+- 🤖 **Machine Learning**: [ML Roadmap](roadmap/ml-roadmap.md) - Build predictive models, chatbots, image analysis
+- 📊 **Observability**: [Observability Roadmap](roadmap/observability.md) - Enhance monitoring, tracing, alerting
+- 📱 **Mobile/Web**: Improve UX, add features, optimize performance
+- 🏗️ **Infrastructure**: DevOps, CI/CD, cloud optimization
 
 ### For System Administrators
 
@@ -43,11 +66,40 @@ Welcome to the comprehensive documentation for the Medico24 healthcare appointme
 2. **Deployment Guide**: See [Deployment Documentation](guides/deployment.md)
 3. **Monitoring & Observability**: See [Monitoring Overview](monitoring/overview.md)
 
-### For Contributors
+## Roadmap & Future Plans
 
-1. **Contributing Guidelines**: See [Contributing Guide](guides/contributing.md)
-2. **Development Setup**: See [Development Guide](guides/development.md)
-3. **Testing Guide**: See [Testing Documentation](guides/testing.md)
+Explore what's next for Medico24:
+
+### Machine Learning
+
+- **Appointment No-Show Prediction** - Reduce no-shows by 20%
+- **Medical Chatbot** - 24/7 AI-powered patient support
+- **Document OCR** - Extract data from prescriptions and lab reports
+- **Health Insights** - Personalized health recommendations
+- **Medical Image Analysis** - X-ray and imaging assistance
+- **Drug Interaction Checker** - Medication safety
+
+[**View Full ML Roadmap →**](roadmap/ml-roadmap.md)
+
+### Observability & Monitoring
+
+- **Distributed Tracing** - End-to-end request tracking with OpenTelemetry
+- **Intelligent Alerting** - ML-powered anomaly detection
+- **APM** - Application performance monitoring
+- **SLO Tracking** - Service level objective monitoring
+- **Enhanced Logging** - Structured, searchable logs
+
+[**View Observability Roadmap →**](roadmap/observability.md)
+
+### Platform Enhancements
+
+- **Multi-Tenant Architecture** - Support multiple healthcare organizations
+- **Video Consultations** - WebRTC-based telehealth
+- **EHR Integration** - FHIR/HL7 support
+- **E-Prescription System** - Digital prescription management
+- **Offline-First Mobile** - Work without internet
+
+[**View All Project Ideas →**](roadmap/project-ideas.md)
 
 ## Architecture
 

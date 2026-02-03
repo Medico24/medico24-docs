@@ -10,6 +10,18 @@ edit_uri: edit/main/medico24-docs/docs/
 
 nav:
   - Home: index.md
+  - Getting Started:
+    - Project Ideas & Roadmap: roadmap/project-ideas.md
+    - Setup Overview: guides/setup/overview.md
+    - Contributing: guides/contributing.md
+  - Setup Guides:
+    - Overview: guides/setup/overview.md
+    - External Services: guides/setup/external-services.md
+    - Backend Development: guides/setup/backend-setup.md
+    - Frontend Development: guides/setup/frontend-setup.md
+    - Mobile Development: guides/setup/mobile-setup.md
+    - ML Development: guides/setup/ml-setup.md
+    - Observability Stack: guides/setup/observability-setup.md
   - API Documentation:
     - Overview: api/overview.md
     - Specifications: api/specifications.md
@@ -18,11 +30,11 @@ nav:
   - Implementations:
     - Dashboard Implementation: implementations/dashboard.md
     - Environmental API: implementations/environment-api.md
-  - Monitoring:
+  - Monitoring & Observability:
     - Overview: monitoring/overview.md
     - Setup Guide: monitoring/setup.md
+    - Observability Roadmap: roadmap/observability.md
   - Development Guides:
-    - Development Setup: guides/development.md
     - Mobile App Guide: guides/mobile-app.md
     - ML Module Guide: guides/ml-module.md
     - Authentication: guides/authentication.md
@@ -32,6 +44,11 @@ nav:
     - Rate Limiting: guides/rate-limiting.md
     - Caching: guides/caching.md
     - Data Privacy: guides/data-privacy.md
+  - Project Roadmap:
+    - Project Ideas: roadmap/project-ideas.md
+    - ML Roadmap: roadmap/ml-roadmap.md
+    - Observability Enhancements: roadmap/observability.md
+  - Community:
     - Contact: guides/contact.md
     - Contributing: guides/contributing.md
     - License: guides/license.md
