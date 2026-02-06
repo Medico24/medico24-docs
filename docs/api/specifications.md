@@ -17,6 +17,8 @@
    - [Health Check](#health-check)
    - [Authentication](#authentication-endpoints)
    - [Users](#user-endpoints)
+   - [Doctors](#doctor-endpoints)
+   - [Clinics](#clinic-endpoints)
    - [Appointments](#appointment-endpoints)
    - [Pharmacies](#pharmacy-endpoints)
    - [Environmental](#environmental-endpoints)
@@ -36,8 +38,10 @@ The Medico24 API is a RESTful API built with FastAPI that provides healthcare ap
 
 - Firebase-based authentication with JWT tokens
 - JWT token management (access + refresh)
+- Doctor profile management with verification system
+- Clinic management with doctor associations
 - Appointment CRUD operations
-- Geographic pharmacy search (PostGIS)
+- Geographic search (doctors, clinics, pharmacies)
 - Real-time environmental data (AQI, weather)
 - Push notifications (FCM)
 - Admin console and dashboard
@@ -748,6 +752,547 @@ Delete (soft delete) an appointment.
 - `401 Unauthorized`: Invalid or missing token
 - `403 Forbidden`: Not authorized to delete this appointment
 - `404 Not Found`: Appointment not found
+
+---
+
+## Doctor Endpoints
+
+### POST /doctors/
+
+Create a new doctor profile.
+
+**Authentication**: Required
+
+**Request Body**:
+
+```json
+{
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "license_number": "LIC-123456",
+  "specialization": "Cardiology",
+  "sub_specialization": "Interventional Cardiology",
+  "qualification": "MBBS, MD (Cardiology), DM (Cardiology)",
+  "experience_years": 10,
+  "consultation_fee": 150.00,
+  "consultation_duration_minutes": 30,
+  "bio": "Experienced cardiologist...",
+  "languages_spoken": ["English", "Spanish"],
+  "medical_council_registration": "MCI123456"
+}
+```
+
+**Response**: `201 Created`
+
+```json
+{
+  "id": "987e6543-e21b-12d3-a456-426614174000",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "license_number": "LIC-123456",
+  "specialization": "Cardiology",
+  "is_verified": false,
+  "rating": null,
+  "created_at": "2026-02-07T10:30:00Z"
+}
+```
+
+**Errors**:
+- `400 Bad Request`: Duplicate license number or user already has doctor profile
+- `401 Unauthorized`: Invalid or missing token
+
+---
+
+### GET /doctors/
+
+List doctors with optional filters.
+
+**Authentication**: Not required
+
+**Query Parameters**:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| skip | integer | 0 | Pagination offset |
+| limit | integer | 20 | Results per page (max: 100) |
+| specialization | string | - | Filter by specialization |
+| min_experience | integer | - | Minimum years of experience |
+| is_verified | boolean | - | Filter by verification status |
+| min_rating | float | - | Minimum rating (0-5) |
+
+**Response**: `200 OK`
+
+```json
+[
+  {
+    "id": "987e6543-e21b-12d3-a456-426614174000",
+    "full_name": "Dr. John Smith",
+    "specialization": "Cardiology",
+    "experience_years": 10,
+    "consultation_fee": 150.00,
+    "is_verified": true,
+    "rating": 4.5
+  }
+]
+```
+
+---
+
+### GET /doctors/{doctor_id}
+
+Get detailed doctor information.
+
+**Authentication**: Not required
+
+**Response**: `200 OK`
+
+```json
+{
+  "id": "987e6543-e21b-12d3-a456-426614174000",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "license_number": "LIC-123456",
+  "specialization": "Cardiology",
+  "sub_specialization": "Interventional Cardiology",
+  "qualification": "MBBS, MD, DM",
+  "experience_years": 10,
+  "consultation_fee": 150.00,
+  "bio": "Experienced cardiologist...",
+  "is_verified": true,
+  "rating": 4.5,
+  "rating_count": 25,
+  "full_name": "Dr. John Smith",
+  "email": "john@example.com",
+  "clinics": [
+    {
+      "clinic_id": "abc12345-e89b-12d3-a456-426614174000",
+      "clinic_name": "City Hospital",
+      "is_primary": true,
+      "consultation_fee": 150.00
+    }
+  ]
+}
+```
+
+**Errors**:
+- `404 Not Found`: Doctor not found
+
+---
+
+### PUT /doctors/{doctor_id}
+
+Update doctor profile.
+
+**Authentication**: Required (doctor owner or admin)
+
+**Request Body** (all fields optional):
+
+```json
+{
+  "specialization": "Cardiology",
+  "experience_years": 12,
+  "consultation_fee": 175.00,
+  "bio": "Updated biography..."
+}
+```
+
+**Response**: `200 OK`
+
+Returns updated doctor profile.
+
+**Errors**:
+- `404 Not Found`: Doctor not found
+- `401 Unauthorized`: Invalid or missing token
+- `403 Forbidden`: Not authorized to update this doctor
+
+---
+
+### GET /doctors/nearby
+
+Search for doctors near a location.
+
+**Authentication**: Not required
+
+**Query Parameters**:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| latitude | float | Yes | Search center latitude (-90 to 90) |
+| longitude | float | Yes | Search center longitude (-180 to 180) |
+| radius_km | float | No | Search radius in km (default: 10, max: 100) |
+| specialization | string | No | Filter by specialization |
+| is_verified | boolean | No | Filter verified doctors (default: true) |
+| min_rating | float | No | Minimum rating (0-5) |
+
+**Response**: `200 OK`
+
+```json
+[
+  {
+    "id": "987e6543-e21b-12d3-a456-426614174000",
+    "full_name": "Dr. John Smith",
+    "specialization": "Cardiology",
+    "rating": 4.5,
+    "clinic_name": "City Hospital",
+    "clinic_address": "123 Main St",
+    "distance_km": 2.5
+  }
+]
+```
+
+---
+
+### POST /doctors/{doctor_id}/verify
+
+Verify a doctor's credentials (admin only).
+
+**Authentication**: Required (Admin)
+
+**Query Parameters**:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| verified_by | UUID | Yes | Admin user ID |
+
+**Request Body**:
+
+```json
+{
+  "verification_documents": {
+    "medical_license": "doc_id_123",
+    "medical_degree": "doc_id_456"
+  },
+  "notes": "Verified all credentials"
+}
+```
+
+**Response**: `200 OK`
+
+```json
+{
+  "id": "987e6543-e21b-12d3-a456-426614174000",
+  "is_verified": true,
+  "verified_at": "2026-02-07T10:30:00Z",
+  "verified_by": "admin-uuid"
+}
+```
+
+**Errors**:
+- `404 Not Found`: Doctor not found
+- `403 Forbidden`: Not admin role
+
+---
+
+### POST /doctors/{doctor_id}/unverify
+
+Remove doctor verification (admin only).
+
+**Authentication**: Required (Admin)
+
+**Response**: `200 OK`
+
+Returns updated doctor with `is_verified: false`.
+
+---
+
+## Clinic Endpoints
+
+### POST /clinics/
+
+Create a new clinic.
+
+**Authentication**: Required (Admin)
+
+**Request Body**:
+
+```json
+{
+  "name": "City Medical Center",
+  "description": "24/7 multi-specialty clinic",
+  "contacts": {
+    "phone_primary": "+1234567890",
+    "email": "info@citymedical.com"
+  },
+  "address": "123 Main St, New York, NY 10001",
+  "latitude": 40.7128,
+  "longitude": -74.0060,
+  "opening_hours": {
+    "monday": {"open": "08:00", "close": "20:00"}
+  },
+  "services": ["Cardiology", "Pediatrics"]
+}
+```
+
+**Response**: `201 Created`
+
+```json
+{
+  "id": "abc12345-e89b-12d3-a456-426614174000",
+  "name": "City Medical Center",
+  "slug": "city-medical-center",
+  "status": "active",
+  "rating": null,
+  "created_at": "2026-02-07T10:30:00Z"
+}
+```
+
+**Errors**:
+- `400 Bad Request`: Duplicate clinic name or slug
+- `403 Forbidden`: Not admin role
+
+---
+
+### GET /clinics/
+
+List clinics with optional filters.
+
+**Authentication**: Not required
+
+**Query Parameters**:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| skip | integer | 0 | Pagination offset |
+| limit | integer | 20 | Results per page (max: 100) |
+| status | string | active | Filter by status |
+| name | string | - | Search by name (partial match) |
+| min_rating | float | - | Minimum rating (0-5) |
+
+**Response**: `200 OK`
+
+```json
+[
+  {
+    "id": "abc12345-e89b-12d3-a456-426614174000",
+    "name": "City Medical Center",
+    "slug": "city-medical-center",
+    "address": "123 Main St",
+    "status": "active",
+    "rating": 4.5,
+    "total_doctors": 15
+  }
+]
+```
+
+---
+
+### GET /clinics/{clinic_id}
+
+Get detailed clinic information.
+
+**Authentication**: Not required
+
+**Response**: `200 OK`
+
+```json
+{
+  "id": "abc12345-e89b-12d3-a456-426614174000",
+  "name": "City Medical Center",
+  "slug": "city-medical-center",
+  "description": "24/7 multi-specialty clinic",
+  "contacts": {
+    "phone_primary": "+1234567890"
+  },
+  "address": "123 Main St",
+  "latitude": 40.7128,
+  "longitude": -74.0060,
+  "opening_hours": {},
+  "services": ["Cardiology"],
+  "status": "active",
+  "rating": 4.5
+}
+```
+
+**Errors**:
+- `404 Not Found`: Clinic not found
+
+---
+
+### GET /clinics/slug/{slug}
+
+Get clinic by URL-friendly slug.
+
+**Authentication**: Not required
+
+**Response**: `200 OK`
+
+Same as GET /clinics/{clinic_id}
+
+---
+
+### PUT /clinics/{clinic_id}
+
+Update clinic information.
+
+**Authentication**: Required (Admin)
+
+**Request Body** (all fields optional):
+
+```json
+{
+  "name": "City Medical Center & Hospital",
+  "description": "Updated description",
+  "status": "active"
+}
+```
+
+**Response**: `200 OK`
+
+Returns updated clinic.
+
+**Errors**:
+- `404 Not Found`: Clinic not found
+- `403 Forbidden`: Not admin role
+
+---
+
+### DELETE /clinics/{clinic_id}
+
+Soft delete a clinic (sets status to permanently_closed).
+
+**Authentication**: Required (Admin)
+
+**Response**: `204 No Content`
+
+**Errors**:
+- `404 Not Found`: Clinic not found
+- `403 Forbidden`: Not admin role
+
+---
+
+### GET /clinics/nearby
+
+Search for clinics near a location.
+
+**Authentication**: Not required
+
+**Query Parameters**:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| latitude | float | Yes | Search center latitude (-90 to 90) |
+| longitude | float | Yes | Search center longitude (-180 to 180) |
+| radius_km | float | No | Search radius in km (default: 10, max: 100) |
+| status | string | No | Filter by status |
+| min_rating | float | No | Minimum rating (0-5) |
+
+**Response**: `200 OK`
+
+```json
+[
+  {
+    "id": "abc12345-e89b-12d3-a456-426614174000",
+    "name": "City Medical Center",
+    "address": "123 Main St",
+    "distance_km": 2.5,
+    "rating": 4.5
+  }
+]
+```
+
+---
+
+### POST /clinics/{clinic_id}/doctors
+
+Add a doctor to a clinic with clinic-specific settings.
+
+**Authentication**: Required (Admin)
+
+**Request Body**:
+
+```json
+{
+  "doctor_id": "987e6543-e21b-12d3-a456-426614174000",
+  "is_primary": true,
+  "consultation_fee": 150.00,
+  "department": "Cardiology",
+  "designation": "Senior Consultant",
+  "available_days": [1, 2, 3, 4, 5],
+  "available_time_slots": {
+    "monday": ["09:00-12:00", "14:00-18:00"]
+  }
+}
+```
+
+**Response**: `201 Created`
+
+```json
+{
+  "id": "def45678-e89b-12d3-a456-426614174000",
+  "doctor_id": "987e6543-e21b-12d3-a456-426614174000",
+  "clinic_id": "abc12345-e89b-12d3-a456-426614174000",
+  "is_primary": true,
+  "status": "active",
+  "consultation_fee": 150.00
+}
+```
+
+**Errors**:
+- `400 Bad Request`: Active association already exists
+- `403 Forbidden`: Not admin role
+- `404 Not Found`: Doctor or clinic not found
+
+---
+
+### GET /clinics/{clinic_id}/doctors
+
+List all doctors at a clinic.
+
+**Authentication**: Not required
+
+**Query Parameters**:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| active_only | boolean | true | Only show active associations |
+
+**Response**: `200 OK`
+
+```json
+[
+  {
+    "doctor_id": "987e6543-e21b-12d3-a456-426614174000",
+    "doctor_name": "Dr. John Smith",
+    "specialization": "Cardiology",
+    "department": "Cardiology",
+    "consultation_fee": 150.00,
+    "is_primary": true
+  }
+]
+```
+
+---
+
+### GET /clinics/doctors/{doctor_id}/clinics
+
+List all clinics for a doctor.
+
+**Authentication**: Not required
+
+**Response**: `200 OK`
+
+```json
+[
+  {
+    "clinic_id": "abc12345-e89b-12d3-a456-426614174000",
+    "clinic_name": "City Medical Center",
+    "clinic_address": "123 Main St",
+    "is_primary": true,
+    "consultation_fee": 150.00
+  }
+]
+```
+
+---
+
+### DELETE /clinics/{clinic_id}/doctors/{doctor_id}
+
+Remove a doctor from a clinic.
+
+**Authentication**: Required (Admin)
+
+**Response**: `204 No Content`
+
+**Errors**:
+- `404 Not Found`: Association not found
+- `403 Forbidden`: Not admin role
 
 ---
 

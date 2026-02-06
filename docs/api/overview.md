@@ -46,6 +46,30 @@ curl -H "Authorization: Bearer <access_token>" \
 - `PUT /appointments/{id}` - Update appointment
 - `PATCH /appointments/{id}/status` - Update appointment status
 
+### Doctors
+- `POST /doctors/` - Create doctor profile
+- `GET /doctors/` - List doctors with filters
+- `GET /doctors/search` - Search doctors
+- `GET /doctors/{id}` - Get doctor details
+- `GET /doctors/user/{user_id}` - Get doctor by user ID
+- `PUT /doctors/{id}` - Update doctor profile
+- `GET /doctors/nearby` - Search nearby doctors
+- `POST /doctors/{id}/verify` - Verify doctor (Admin)
+- `POST /doctors/{id}/unverify` - Unverify doctor (Admin)
+
+### Clinics
+- `POST /clinics/` - Create clinic (Admin)
+- `GET /clinics/` - List clinics
+- `GET /clinics/search` - Search clinics
+- `GET /clinics/nearby` - Search nearby clinics
+- `GET /clinics/{id}` - Get clinic details
+- `GET /clinics/slug/{slug}` - Get clinic by slug
+- `PUT /clinics/{id}` - Update clinic (Admin)
+- `DELETE /clinics/{id}` - Delete clinic (Admin)
+- `POST /clinics/{clinic_id}/doctors` - Add doctor to clinic (Admin)
+- `GET /clinics/{clinic_id}/doctors` - List clinic's doctors
+- `GET /clinics/doctors/{doctor_id}/clinics` - List doctor's clinics
+
 ### Pharmacies
 - `GET /pharmacies` - List pharmacies
 - `GET /pharmacies/search/nearby` - Search nearby pharmacies
@@ -175,6 +199,22 @@ class ApiClient {
 - **Development**: `http://localhost:8000`
 - **Staging**: `https://staging-api.medico24.com`
 - **Production**: `https://api.medico24.com`
+
+## API Categories
+
+### Healthcare Management
+- [Doctors](specifications.md#doctor-endpoints) - Complete doctor profile management
+- [Clinics](specifications.md#clinic-endpoints) - Clinic management and doctor-clinic associations
+- [Appointments](specifications.md#appointment-endpoints) - Appointment booking system
+
+### Location Services
+- [Pharmacies](specifications.md#pharmacy-endpoints) - Pharmacy search with geolocation
+- [Environmental Data](specifications.md#environmental-endpoints) - AQI and weather data
+
+### User & Admin
+- [Authentication](specifications.md#authentication-endpoints) - Firebase JWT authentication
+- [Users](specifications.md#user-endpoints) - User profile management
+- [Admin](specifications.md#admin-endpoints) - Administrative operations
 
 ## Next Steps
 
