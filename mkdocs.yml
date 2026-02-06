@@ -27,9 +27,14 @@ nav:
     - Specifications: api/specifications.md
   - Architecture:
     - System Overview: architecture/overview.md
+    - Database Architecture: architecture/database.md
+    - Application Layers: architecture/layers.md
+    - Caching Strategy: architecture/caching.md
   - Implementations:
     - Dashboard Implementation: implementations/dashboard.md
     - Environmental API: implementations/environment-api.md
+    - Firebase Integration: implementations/firebase-integration.md
+    - Google Maps Integration: implementations/google-maps-integration.md
   - Monitoring & Observability:
     - Overview: monitoring/overview.md
     - Setup Guide: monitoring/setup.md
