@@ -207,7 +207,7 @@ def get_ttl_for_entity(entity_type: str, is_verified: bool = None) -> int:
 ```python
 # Individual doctors
 "doctor:{doctor_id}"                          # TTL: 900s
-"doctor:user:{user_id}"                       # TTL: 900s
+"doctor:email:{email_hash}"                   # TTL: 900s
 "doctor:license:{license_number}"             # TTL: 900s
 
 # Doctor lists
@@ -385,7 +385,7 @@ async def update_doctor(
     
     # Invalidate related caches
     await cache.delete(f"doctor:{doctor_id}")
-    await cache.delete(f"doctor:user:{doctor.user_id}")
+    await cache.delete(f"doctor:email:{hash(doctor.email)}")
     await cache.clear_pattern("doctor:list:*")
     await cache.clear_pattern(f"doctor:{doctor_id}:*")
     
@@ -505,7 +505,7 @@ Single key deletion for specific records:
 ```python
 # Update doctor
 await cache.delete(f"doctor:{doctor_id}")
-await cache.delete(f"doctor:user:{user_id}")
+await cache.delete(f"doctor:email:{email_hash}")
 ```
 
 #### 2. Pattern-Based Invalidation
@@ -543,8 +543,8 @@ await cache.clear_pattern("clinic:list:*")
 | Update user | `user:{id}`, `user:firebase:{uid}` |
 | Delete user | `user:{id}`, `user:*:{id}`, all related entities |
 | **Doctor Operations** | |
-| Create doctor | `doctor:list:*`, `doctor:user:{user_id}` |
-| Update doctor | `doctor:{id}`, `doctor:user:{user_id}`, `doctor:list:*` |
+| Create doctor | `doctor:list:*`, `doctor:email:{email_hash}` |
+| Update doctor | `doctor:{id}`, `doctor:email:{email_hash}`, `doctor:list:*` |
 | Verify doctor | `doctor:{id}`, `doctor:verify:{id}`, `doctor:list:*` |
 | Delete doctor | `doctor:{id}`, `doctor:*`, `doctor:list:*` |
 | **Clinic Operations** | |

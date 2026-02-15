@@ -51,7 +51,6 @@ curl -H "Authorization: Bearer <access_token>" \
 - `GET /doctors/` - List doctors with filters
 - `GET /doctors/search` - Search doctors
 - `GET /doctors/{id}` - Get doctor details
-- `GET /doctors/user/{user_id}` - Get doctor by user ID
 - `PUT /doctors/{id}` - Update doctor profile
 - `GET /doctors/nearby` - Search nearby doctors
 - `POST /doctors/{id}/verify` - Verify doctor (Admin)

@@ -48,10 +48,16 @@ The Medico24 platform uses a PostgreSQL database with PostGIS for geospatial que
      │ 1:1           │ 1:1
      ▼               │
 ┌──────────┐    ┌────┴────┐
-│ patients │    │ doctors │
-└──────────┘    └────┬────┘
+│ patients │    │  admins │
+└──────────┘    └─────────┘
+     │               
+     │ 1:N           
+     │               
+     │          ┌──────────┐
+     │          │ doctors  │
+     │          └────┬─────┘
      │               │
-     │ 1:N           │ M:N
+     │               │ M:N
      │               ▼
      │          ┌──────────────────┐
      │          │ doctor_clinics   │◄────┐
@@ -81,9 +87,9 @@ The Medico24 platform uses a PostgreSQL database with PostGIS for geospatial que
 
 | Table | Purpose | Relationships |
 |-------|---------|---------------|
-| **users** | User accounts and authentication | Referenced by patients, doctors, admins |
+| **users** | User accounts and authentication | Referenced by patients, admins |
 | **patients** | Patient profiles | 1:1 with users, 1:N with appointments |
-| **doctors** | Doctor profiles | 1:1 with users, M:N with clinics via doctor_clinics |
+| **doctors** | Doctor profiles (independent) | M:N with clinics via doctor_clinics |
 | **admins** | Admin profiles and permissions | 1:1 with users |
 | **clinics** | Healthcare facility information | M:N with doctors via doctor_clinics |
 | **doctor_clinics** | Doctor-clinic associations | Junction table for doctors ↔ clinics |
@@ -135,7 +141,6 @@ CREATE INDEX idx_users_role ON users(role);
 **Relationships:**
 
 - 1:1 with `patients` (via `user_id`)
-- 1:1 with `doctors` (via `user_id`)
 - 1:N with `appointments`, `notifications`, `refresh_tokens`
 
 ---
@@ -181,12 +186,15 @@ CREATE INDEX idx_patients_user_id ON patients(user_id);
 
 ### doctors
 
-Extended profile for users with doctor role.
+Extended profile for medical professionals (independent of users table).
 
 ```sql
 CREATE TABLE doctors (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    profile_picture_url TEXT,
     license_number VARCHAR(100) UNIQUE NOT NULL,
     specialization VARCHAR(200) NOT NULL,
     sub_specialization VARCHAR(200),
@@ -208,13 +216,14 @@ CREATE TABLE doctors (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_doctors_user_id ON doctors(user_id);
+CREATE INDEX idx_doctors_email ON doctors(email);
 CREATE INDEX idx_doctors_license_number ON doctors(license_number);
 CREATE INDEX idx_doctors_specialization ON doctors(specialization);
 ```
 
 **Key Features:**
 
+- Independent from users table (doctors manage their own authentication)
 - Verification system for credential validation
 - Rating system for patient reviews
 - Multiple language support
@@ -223,8 +232,8 @@ CREATE INDEX idx_doctors_specialization ON doctors(specialization);
 
 **Constraints:**
 
+- Email must be unique
 - License number must be unique
-- One doctor profile per user
 - Rating must be between 0 and 5
 
 ---
@@ -626,7 +635,6 @@ Used when child records should be removed if parent is deleted:
 ```sql
 -- User deletion should remove all associated data
 patients.user_id → users.id (ON DELETE CASCADE)
-doctors.user_id → users.id (ON DELETE CASCADE)
 appointments.patient_id → patients.id (ON DELETE CASCADE)
 notifications.user_id → users.id (ON DELETE CASCADE)
 refresh_tokens.user_id → users.id (ON DELETE CASCADE)
@@ -634,7 +642,7 @@ doctor_clinics.doctor_id → doctors.id (ON DELETE CASCADE)
 doctor_clinics.clinic_id → clinics.id (ON DELETE CASCADE)
 ```
 
-**Rationale:** Patient/doctor profiles are meaningless without user accounts. All user data should be cleanly removed.
+**Rationale:** Patient profiles are meaningless without user accounts. All user data should be cleanly removed. Doctors are independent entities and not affected by user deletions.
 
 #### SET NULL
 
@@ -670,7 +678,7 @@ users.email (UNIQUE)
 
 -- Profile constraints
 patients.user_id (UNIQUE) -- One patient profile per user
-doctors.user_id (UNIQUE) -- One doctor profile per user
+doctors.email (UNIQUE) -- One doctor per email address
 doctors.license_number (UNIQUE) -- One doctor per license
 
 -- Clinic constraints
@@ -714,7 +722,6 @@ Foreign key columns are indexed for join performance:
 ```sql
 -- User relationships
 idx_patients_user_id
-idx_doctors_user_id
 
 -- Appointment relationships
 idx_appointments_patient_id
@@ -740,6 +747,7 @@ idx_users_email (for user search)
 idx_users_role (for role-based queries)
 
 -- Doctor lookups
+idx_doctors_email (for lookups and uniqueness)
 idx_doctors_license_number (for verification)
 idx_doctors_specialization (for filtering)
 

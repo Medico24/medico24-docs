@@ -767,7 +767,9 @@ Create a new doctor profile.
 
 ```json
 {
-  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "email": "dr.smith@example.com",
+  "full_name": "Dr. John Smith",
+  "phone": "+1234567890",
   "license_number": "LIC-123456",
   "specialization": "Cardiology",
   "sub_specialization": "Interventional Cardiology",
@@ -781,12 +783,33 @@ Create a new doctor profile.
 }
 ```
 
+**Request Schema**:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| email | string | Yes | Doctor's email address (must be unique) |
+| full_name | string | Yes | Doctor's full name |
+| phone | string | No | Contact phone number |
+| profile_picture_url | string | No | URL to profile picture |
+| license_number | string | Yes | Medical license number (must be unique) |
+| specialization | string | Yes | Primary medical specialization |
+| sub_specialization | string | No | Sub-specialization |
+| qualification | string | No | Educational qualifications |
+| experience_years | integer | No | Years of medical experience |
+| consultation_fee | decimal | No | Consultation fee amount |
+| consultation_duration_minutes | integer | No | Standard consultation duration |
+| bio | string | No | Professional biography |
+| languages_spoken | array[string] | No | Languages the doctor speaks |
+| medical_council_registration | string | No | Medical council registration number |
+
 **Response**: `201 Created`
 
 ```json
 {
   "id": "987e6543-e21b-12d3-a456-426614174000",
-  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "email": "dr.smith@example.com",
+  "full_name": "Dr. John Smith",
+  "phone": "+1234567890",
   "license_number": "LIC-123456",
   "specialization": "Cardiology",
   "is_verified": false,
@@ -796,7 +819,8 @@ Create a new doctor profile.
 ```
 
 **Errors**:
-- `400 Bad Request`: Duplicate license number or user already has doctor profile
+- `400 Bad Request`: Duplicate email or license number
+- `422 Unprocessable Entity`: Validation error
 - `401 Unauthorized`: Invalid or missing token
 
 ---
@@ -847,7 +871,10 @@ Get detailed doctor information.
 ```json
 {
   "id": "987e6543-e21b-12d3-a456-426614174000",
-  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "email": "dr.smith@example.com",
+  "full_name": "Dr. John Smith",
+  "phone": "+1234567890",
+  "profile_picture_url": "https://example.com/profile.jpg",
   "license_number": "LIC-123456",
   "specialization": "Cardiology",
   "sub_specialization": "Interventional Cardiology",
@@ -858,8 +885,6 @@ Get detailed doctor information.
   "is_verified": true,
   "rating": 4.5,
   "rating_count": 25,
-  "full_name": "Dr. John Smith",
-  "email": "john@example.com",
   "clinics": [
     {
       "clinic_id": "abc12345-e89b-12d3-a456-426614174000",
